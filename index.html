@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,8 +15,9 @@
 
             try {
                 // Fetch patents directly from SerpAPI
-                const serpApiKey = '53e574693b53301910ee97bf62391c47f3c31221c7b348bbd345a814e652a8fe';
-                const serpApiResponse = await fetch(`https://serpapi.com/search?engine=google_patents&q=${encodeURIComponent(query)}&api_key=${serpApiKey}`);
+                const serpApiKey = 'ba41a98a0ef72b2de21ec13481d8f3cdcb422a000c59e0d9fdf1dd335a1def43';
+                const corsProxy = "https://cors-anywhere.herokuapp.com/";
+                const serpApiResponse = await fetch(`${corsProxy}https://serpapi.com/search?engine=google_patents&q=${encodeURIComponent(query)}&api_key=${serpApiKey}`);
 
                 if (!serpApiResponse.ok) {
                     throw new Error('Error fetching patents from SerpAPI.');
@@ -25,7 +27,7 @@
                 const patents = serpData.organic_results || [];
 
                 // Use OpenAI API to rank relevance
-                const openAiApiKey = 'sk-svcacct-v7sLogtnYHSXBilrrsN6HipG98QpIRv0VejDNEboptBPYoR4bicWsl4vNugxkUyPE-fKsUOT3BlbkFJaJVgrhJ_-53qoEMOP_zti6JrgX8JHG3-FCInLQ9gsjpwtCiNysacWpqhFjAa91w9FxRZ2AA';
+                const openAiApiKey = 'your-openai-key';
                 const relevanceScores = await Promise.all(patents.map(async (patent) => {
                     const response = await fetch('https://api.openai.com/v1/completions', {
                         method: 'POST',
@@ -35,7 +37,7 @@
                         },
                         body: JSON.stringify({
                             model: 'text-davinci-003',
-                            prompt: `Determine the relevance of this patent to the query: "${query}". Patent details: ${JSON.stringify(patent)}`,
+                            prompt: `Determine the relevance of this patent to the query: \"${query}\". Patent details: ${JSON.stringify(patent)}`,
                             max_tokens: 100
                         })
                     });
